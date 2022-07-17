@@ -20,32 +20,48 @@ let loggedUser = ""
 //       cb(null, file.originalname);
 //    }
 // });
-// const upload = multer({
-//    storage:Storage
-// }).single("image")
 
-app.post("/signup",(req,res)=>{
-    console.log(req.body)
-   //  upload(req,res,(err)=>{
-   //    if(err){
-   //       console.log(err)
-   //    }
-   //    else{
-   //       const newImage = new ImageModel({
-   //          image: {
-   //             data:req.body.image,
-   //             contentType:"image/png"
-   //          }
-   //       })
-   //       newImage.save()
-   //       .then(()=>res.send("sucessfully uploaded"))
-   //       .catch(err=>console.log(err))
-   //    }
-   // })
-    db.collection("userdetails").insert(req.body).then((user)=>{
-        res.json(user)
-    })
- })
+const fileStorageEngine = multer.diskStorage({
+   destination : (req,file,cb)=>{
+      cb(null,'./images')
+   },
+   filename: (req, file, cb) =>{
+      cb(null, Date.now() + "--"+ file.originalname)
+   },
+})
+const upload = multer({
+   storage:fileStorageEngine
+})
+app.post("/signup",upload.single("image"),(req,res)=>{
+   console.log(req.file);
+   res.send("sucessfully uploaded")
+   db.collection("userdetails").insert(req.body).then((user)=>{
+       res.json(user)
+   })
+})
+
+// app.post("/signup",(req,res)=>{
+//     // console.log(req.body)
+//     upload(req,res,(err)=>{
+//       if(err){
+//          console.log(err)
+//       }
+//       else{
+//          const newImage = new ImageModel({
+//             image: {
+//                data:req.file.filename,
+//                contentType:"image/png"
+//             }
+//          })
+//          newImage.save()
+//          .then(()=>res.send("sucessfully uploaded"))
+//          .catch(err=>console.log(err))
+//       }
+//    })
+//     db.collection("userdetails").insert(req.body).then((user)=>{
+//         res.json(user)
+//     })
+//  })
 
  app.post("/loggedIn",(req,res)=>{
     // console.log(req.body)
