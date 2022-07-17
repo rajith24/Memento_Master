@@ -14,6 +14,7 @@ class CustomIcon extends Component {
       usersList:[],
       userlist:[],
       customerList:[],
+      loggedInUserName : ""
     };
     // this.audio = new Audio(Audio)
   }
@@ -29,12 +30,16 @@ class CustomIcon extends Component {
       })
     },700)
 
+    const res = await fetch('/loggedUserName')
+    const response = await res.json()
+
     const res1 = await fetch('/loginDetails')
     const response1 = await res1.json()  
     this.setState({
-      usersList : response1
+      usersList : response1,
+      loggedInUserName : response,
     })
-    console.log(this.state.usersList)
+    // console.log(this.state.usersList)
 
   }
 
@@ -66,15 +71,17 @@ class CustomIcon extends Component {
           <>
             <div>
               Contacts
-              {/* {console.log(this.state.usersList)} */}
+              {console.log(this.props.loggedInUserName)}
               {this.state.usersList.map((value,index) => {
                 return(
                   <>
-                  {/* {console.log(value)} */}
+                    {this.state.loggedInUserName != value.name ? 
                       <div key={index}>
-                          {value.name}
+                        {value.name}
                       </div>
-                      </>
+                    : <></>}
+                      
+                  </>
                 )
               })}
             </div>

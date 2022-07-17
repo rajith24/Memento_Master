@@ -49,7 +49,7 @@ class App extends React.Component {
       userNameArray :[],
       passwordArray :[],
       loginSuccess : false,
-      loginUserName:undefined,
+      loggedInUserName:undefined,
     };
     // this.audio = new Audio(Audio)
   }
@@ -156,9 +156,10 @@ this. setState({
               for(var i=0;i<response.length;i++){
                 if(response[i].name == this.state.loginUserName){
                   if(response[i].password== this.state.loginPassword){
+                        axios.post('/loggedIn', {name : response[i].name})
                         this.setState({
                             loginSuccess : true,
-                            loginUserName : response[i].name,
+                            loggedInUserName : response[i].name,
                         })
                     //   alert("success")
 
@@ -411,14 +412,12 @@ this. setState({
 
         </div>
           {this.state.loginSuccess ? 
-          <Navigate to="/avatar" replace={true} />
+            <>
+                <Navigate to="/avatar" replace={true}/>
+             </>
           : <></>}
 
-        <Router>
-            <Routes >
-                <Route path='/avatar' element={<CustomIcon/>} />
-            </Routes >
-        </Router>
+      
           
       </Fragment>
     );
