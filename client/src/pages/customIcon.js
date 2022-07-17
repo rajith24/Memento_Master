@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import loadingVideo from "./loading.mp4";
-
+import { Avatar } from '@mui/material';
 
 class CustomIcon extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class CustomIcon extends Component {
       self.setState({
         loading : false,
       })
-    },700)
+    },7500)
 
     const res = await fetch('/loggedUserName')
     const response = await res.json()
@@ -71,7 +71,6 @@ class CustomIcon extends Component {
           <>
             <div>
               Contacts
-              {console.log(this.props.loggedInUserName)}
               {this.state.usersList.map((value,index) => {
                 return(
                   <>

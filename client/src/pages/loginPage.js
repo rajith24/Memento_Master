@@ -1,10 +1,16 @@
 import React, { Component, Fragment, OBJECT, PARAM, EMBED } from "react";
 import ReactDOM from "react-dom";
-import { useNavigate} from "react-router-dom";
-import {  BrowserRouter as Router, Link, Routes,Route,Navigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Link,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 // import Home from "./pages/home"
 // import { Redirect } from 'react-router';
-import CustomIcon from './customIcon'
+import CustomIcon from "./customIcon";
 
 import {
   Row,
@@ -27,7 +33,8 @@ import audio from "./1.mp3";
 // const audio = require("./1.mp3");
 import "./App.css";
 
-const axios = require('axios');
+const axios = require("axios");
+// let avatar = undefined
 // import Howl from "howler"
 let audioPlay = new Audio(audio);
 
@@ -44,33 +51,34 @@ class App extends React.Component {
       emailId: "",
       password: "",
       confirmPassword: "",
-      loginUserName : "",
-      loginPassword :"",
-      userNameArray :[],
-      passwordArray :[],
-      loginSuccess : false,
-      loggedInUserName:undefined,
+      loginUserName: "",
+      loginPassword: "",
+      userNameArray: [],
+      passwordArray: [],
+      loginSuccess: false,
+      loggedInUserName: undefined,
+      imageLoaded: false,
+      avatar: undefined,
     };
     // this.audio = new Audio(Audio)
   }
 
   componentDidMount = async () => {
-    
-    const res = await fetch('/loginDetails')
-        const response = await res.json()
-        // console.log(response)
-        var userNameArray=[]
-        var passwordArray=[]
-        if(response.length>0){
-          for(var i=0;i<response.length;i++){
-            userNameArray.push(response[i].name)
-            passwordArray.push(response[i].password)
-    }
+    const res = await fetch("/loginDetails");
+    const response = await res.json();
+    // console.log(response)
+    var userNameArray = [];
+    var passwordArray = [];
+    if (response.length > 0) {
+      for (var i = 0; i < response.length; i++) {
+        userNameArray.push(response[i].name);
+        passwordArray.push(response[i].password);
       }
-      this.setState({
-        userNameArray : userNameArray,
-        passwordArray : passwordArray
-      })
+    }
+    this.setState({
+      userNameArray: userNameArray,
+      passwordArray: passwordArray,
+    });
     // audioPlay.load();
     // $("#test").get(0).play();
     // document.getElementById("my_audio").click();
@@ -135,48 +143,45 @@ class App extends React.Component {
     // audioPlay.play()
     // console.log("hi")
   };
- handleLoginUserName = (e) => {
-this. setState({
-  loginUserName : e.currentTarget.value
-})
- }
- handleLoginPassword = (e) => {
-  this. setState({
-    loginPassword : e.currentTarget.value})
-
- }
- validate = async(e) => {
-  
-  const res = await fetch('/loginDetails')
-        const response = await res.json()
-        console.log(response)
-        if(response.length>0){
-      
-            if(this.state.userNameArray.includes(this.state.loginUserName)){
-              for(var i=0;i<response.length;i++){
-                if(response[i].name == this.state.loginUserName){
-                  if(response[i].password== this.state.loginPassword){
-                        axios.post('/loggedIn', {name : response[i].name})
-                        this.setState({
-                            loginSuccess : true,
-                            loggedInUserName : response[i].name,
-                        })
-                    //   alert("success")
-
-                  }else{
-                    alert("Wrong password")
-                  }
-                }
-              }
-            }else{
-             alert("Username not found")
+  handleLoginUserName = (e) => {
+    this.setState({
+      loginUserName: e.currentTarget.value,
+    });
+  };
+  handleLoginPassword = (e) => {
+    this.setState({
+      loginPassword: e.currentTarget.value,
+    });
+  };
+  validate = async (e) => {
+    const res = await fetch("/loginDetails");
+    const response = await res.json();
+    console.log(response);
+    if (response.length > 0) {
+      if (this.state.userNameArray.includes(this.state.loginUserName)) {
+        for (var i = 0; i < response.length; i++) {
+          if (response[i].name == this.state.loginUserName) {
+            if (response[i].password == this.state.loginPassword) {
+              axios.post("/loggedIn", { name: response[i].name });
+              this.setState({
+                loginSuccess: true,
+                loggedInUserName: response[i].name,
+              });
+              //   alert("success")
+            } else {
+              alert("Wrong password");
             }
-        }else{
-          alert("Username not found")
+          }
         }
- }
+      } else {
+        alert("Username not found");
+      }
+    } else {
+      alert("Username not found");
+    }
+  };
   handleUserName = (e) => {
-        this.setState({
+    this.setState({
       userName: e.currentTarget.value,
     });
   };
@@ -198,7 +203,7 @@ this. setState({
     });
   };
   handleRegister = () => {
-    if (this.state.password===this.state.confirmPassword){
+    if (this.state.password === this.state.confirmPassword) {
       if (
         this.state.userName.length > 3 &&
         this.state.emailId.includes("@") &&
@@ -208,31 +213,42 @@ this. setState({
           name: this.state.userName,
           email: this.state.emailId,
           password: this.state.password,
-  
+          // image: avatar,
         };
-  
-  
-        axios.post('/signup', response)
+
+        axios.post("/signup", response);
       } else {
-        if (!(this.state.userName.length > 3) && !(this.state.password.length > 3)) {
+        if (
+          !(this.state.userName.length > 3) &&
+          !(this.state.password.length > 3)
+        ) {
           alert("Username and password length should be more than 3.");
         } else {
           alert("Email should contain domain name");
         }
       }
-
-    }else{
-      alert("Passwords didnot match")
+    } else {
+      alert("Passwords didnot match");
     }
-      
-    
-   
+  };
+
+  handleUserImage = async (e) => {
+    var reader = new FileReader();
+    reader.onloadend = function (e) {
+      console.log(reader)
+      // avatar = reader.result
+      this.setState({
+        imageLoaded: true,
+        avatar: [reader.result],
+      });
+    }.bind(this);
+
+
   };
 
   render() {
     return (
       <Fragment>
-
         <div>
           <video
             className="VideoTag"
@@ -400,6 +416,28 @@ this. setState({
                       />
                     </Row>
                     <Row>
+                      <Label>User Icon</Label>
+                    </Row>
+                    <Row>
+                      <Input
+                        type="file"
+                        name="password"
+                        id="examplePassword"
+                        accept="image/*"
+                        onChange={this.handleUserImage}
+                        placeholder="Select Avatar"
+                      />
+                    </Row>
+                    {this.state.imageLoaded ? (
+                      <Row 
+                      // style={{width:"200px"}}
+                      >
+                        <img src={this.state.avatar} />
+                      </Row>
+                    ) : (
+                      <></>
+                    )}
+                    <Row>
                       <Button onClick={this.handleRegister} className="mt-3">
                         APPLY
                       </Button>
@@ -409,16 +447,14 @@ this. setState({
               </div>
             </CardBody>
           </Card>
-
         </div>
-          {this.state.loginSuccess ? 
-            <>
-                <Navigate to="/avatar" replace={true}/>
-             </>
-          : <></>}
-
-      
-          
+        {this.state.loginSuccess ? (
+          <>
+            <Navigate to="/avatar" replace={true} />
+          </>
+        ) : (
+          <></>
+        )}
       </Fragment>
     );
   }

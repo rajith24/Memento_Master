@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const multer = require('multer')
+// const multer = require('multer')
 const{MongoClient}=require("mongodb")
 require("dotenv").config({ path: "./config.env" });
-const ImageModel=require("./model")
+// const ImageModel=require("./model")
 const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
@@ -14,34 +14,34 @@ const axios = require('axios');
 app.use(express.urlencoded({ extended: true }));
 let loggedUser = ""
 //storage
-const Storage = multer.diskStorage({
-   destination:'uploads',
-   filename: (req,file,cb) =>{
-      cb(null, file.originalname);
-   }
-});
-const upload = multer({
-   storage:Storage
-}).single("image")
+// const Storage = multer.diskStorage({
+//    destination:'uploads',
+//    filename: (req,file,cb) =>{
+//       cb(null, file.originalname);
+//    }
+// });
+// const upload = multer({
+//    storage:Storage
+// }).single("image")
 
 app.post("/signup",(req,res)=>{
-    // console.log(req.body)
-    upload(req,res,(err)=>{
-      if(err){
-         console.log(err)
-      }
-      else{
-         const newImage = new ImageModel({
-            image: {
-               data:req.file.filename,
-               contentType:"image/png"
-            }
-         })
-         newImage.save()
-         .then(()=>res.send("sucessfully uploaded"))
-         .catch(err=>console.log(err))
-      }
-   })
+    console.log(req.body)
+   //  upload(req,res,(err)=>{
+   //    if(err){
+   //       console.log(err)
+   //    }
+   //    else{
+   //       const newImage = new ImageModel({
+   //          image: {
+   //             data:req.body.image,
+   //             contentType:"image/png"
+   //          }
+   //       })
+   //       newImage.save()
+   //       .then(()=>res.send("sucessfully uploaded"))
+   //       .catch(err=>console.log(err))
+   //    }
+   // })
     db.collection("userdetails").insert(req.body).then((user)=>{
         res.json(user)
     })
