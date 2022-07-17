@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Routes , Route, Link } from 'react-router-dom';
 import CustomIcon from './pages/customIcon';
-import Home from './pages/home'
 import Login from './pages/loginPage'
 
 class App extends Component {
