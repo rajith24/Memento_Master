@@ -13,6 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(require("./routes/record"));
 // get driver connection
 // const dbo = require("./db/conn");
+let loggedUser = ""
 
 app.post("/signup",(req,res)=>{
     // console.log(req.body)
@@ -20,10 +21,21 @@ app.post("/signup",(req,res)=>{
         res.json(user)
     })
  })
+
+ app.post("/loggedIn",(req,res)=>{
+    // console.log(req.body)
+    loggedUser = req.body.name
+ })
+
  app.get("/loginDetails",async(req,res)=>{
     const all=await db.collection("userdetails").find().toArray()
     // console.log(all)
     res.status(200).json(all)
+
+ })
+
+ app.get("/loggedUserName",async(req,res)=>{
+    res.status(200).json(loggedUser)
 
  })
 
