@@ -34,9 +34,10 @@ import audio from "./1.mp3";
 import "./App.css";
 
 const axios = require("axios");
-// let avatar = undefined
+let avatar = undefined
 // import Howl from "howler"
 let audioPlay = new Audio(audio);
+let globalLoginDetails = []
 
 class App extends React.Component {
   constructor(props) {
@@ -59,6 +60,8 @@ class App extends React.Component {
       loggedInUserName: undefined,
       imageLoaded: false,
       avatar: undefined,
+      uploadImage : undefined,
+      file : undefined,
     };
     // this.audio = new Audio(Audio)
   }
@@ -66,6 +69,7 @@ class App extends React.Component {
   componentDidMount = async () => {
     const res = await fetch("/loginDetails");
     const response = await res.json();
+    globalLoginDetails = response
     // console.log(response)
     var userNameArray = [];
     var passwordArray = [];
@@ -82,24 +86,24 @@ class App extends React.Component {
     // audioPlay.load();
     // $("#test").get(0).play();
     // document.getElementById("my_audio").click();
-    setTimeout(() => {
-      // new Audio(audio).play();
-      // document.getElementById("test").pause();
-      // document.getElementById("test").setAttribute('src', audio);
-      // document.getElementById("test").load();
-      // document.getElementById("test").play();
-      // $( "#cardID" ).click();
-      // // $('body').trigger('click')
-      // // $("#my_audio").trigger("click");
-      // document.getElementById("test").setAttribute('muted', '');
-      // document.getElementById("videoTag").setAttribute('muted', '');
-      // // $("#test").get(0).play();
-      // // document.getElementById("my_audio").click();
-      // // $(".my_audio").trigger('load');
-      // document.querySelector('signInCard').addEventListener('click', function() {
-      //   new Audio(audio).play();
-      // });
-    }, 3000);
+    // setTimeout(() => {
+    //   // new Audio(audio).play();
+    //   // document.getElementById("test").pause();
+    //   // document.getElementById("test").setAttribute('src', audio);
+    //   // document.getElementById("test").load();
+    //   // document.getElementById("test").play();
+    //   // $( "#cardID" ).click();
+    //   // // $('body').trigger('click')
+    //   // // $("#my_audio").trigger("click");
+    //   // document.getElementById("test").setAttribute('muted', '');
+    //   // document.getElementById("videoTag").setAttribute('muted', '');
+    //   // // $("#test").get(0).play();
+    //   // // document.getElementById("my_audio").click();
+    //   // // $(".my_audio").trigger('load');
+    //   // document.querySelector('signInCard').addEventListener('click', function() {
+    //   //   new Audio(audio).play();
+    //   // });
+    // }, 3000);
 
     var context = new AudioContext();
 
@@ -156,6 +160,19 @@ class App extends React.Component {
   validate = async (e) => {
     const res = await fetch("/loginDetails");
     const response = await res.json();
+    var userNameArray = [];
+    var passwordArray = [];
+    if (response.length > 0) {
+      for (var i = 0; i < response.length; i++) {
+        userNameArray.push(response[i].name);
+        passwordArray.push(response[i].password);
+      }
+    }
+    this.setState({
+      userNameArray: userNameArray,
+      passwordArray: passwordArray,
+    });
+    // const response = globalLoginDetails
     console.log(response);
     if (response.length > 0) {
       if (this.state.userNameArray.includes(this.state.loginUserName)) {
@@ -203,17 +220,22 @@ class App extends React.Component {
     });
   };
   handleRegister = () => {
+
     if (this.state.password === this.state.confirmPassword) {
       if (
         this.state.userName.length > 3 &&
         this.state.emailId.includes("@") &&
         this.state.password.length > 3
       ) {
+
+        // const myBuffer = Buffer.from(this.state.avatar, 'base64');
+        // console.log(myBuffer)
         var response = {
           name: this.state.userName,
           email: this.state.emailId,
           password: this.state.password,
-          // image: avatar,
+          file: this.state.file,
+          image : this.state.uploadImage,
         };
 
         axios.post("/signup", response);
@@ -233,18 +255,69 @@ class App extends React.Component {
   };
 
   handleUserImage = async (e) => {
-    var reader = new FileReader();
-    reader.onloadend = function (e) {
-      console.log(reader)
-      // avatar = reader.result
+
+    const { files } = e.target
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]; // OR const file = files.item(i);
       this.setState({
-        imageLoaded: true,
-        avatar: [reader.result],
-      });
-    }.bind(this);
+        file : file.name,
+      })
+      this.getBase64(file).then(
+         data => {
+          // const myBuffer = Buffer.from(this.state.avatar, 'base64');
+          console.log(data.toString())
+          this.setState({
+          imageLoaded: true,
+          uploadImage : data,
+          // uploadImage: JSON.stringify(new Uint8Array(data)),
+          // uploadImage : [new Uint8Array(data)]
+         })
+        }
+      );
+      this.getpreview(file).then(
+        data => {
+         // const myBuffer = Buffer.from(this.state.avatar, 'base64');
+         this.setState({
+         imageLoaded: true,
+         avatar: [data],
+        })
+       }
+     );
+      // console.log(file)
+      
+    }
+
+    // var reader = new FileReader();
+    // reader.onloadend = function (e) {
+    //   console.log(reader)
+    //   // avatar = reader.result
+    //   this.setState({
+    //     imageLoaded: true,
+    //     avatar: [reader.result],
+    //   });
+    // }.bind(this);
 
 
   };
+  getBase64(file){
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        // reader.readAsArrayBuffer(file);
+        // reader.readAsText(file,"base64");
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+  }
+
+  getpreview(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+}
 
   render() {
     return (
@@ -347,7 +420,7 @@ class App extends React.Component {
                         placeholder="Cast Your Spell"
                       />
                     </Row>
-                    <Row>
+                    <Row onClick={this.validate}>
                       <Button className="mt-3" onClick={this.validate}>
                         ENTER
                       </Button>
@@ -361,6 +434,7 @@ class App extends React.Component {
                   aria-labelledby="profile-tab"
                 >
                   <Col>
+                  {/* <form action="/signup" method="POST" enctype="multipart/form-data"> */}
                     <Row>
                       <Label className="">User Name</Label>
                     </Row>
@@ -415,33 +489,62 @@ class App extends React.Component {
                         placeholder="Confirm Your Spell"
                       />
                     </Row>
+                    
                     <Row>
                       <Label>User Icon</Label>
                     </Row>
                     <Row>
                       <Input
                         type="file"
-                        name="password"
-                        id="examplePassword"
+                        id="image" 
+                        name="image" 
                         accept="image/*"
                         onChange={this.handleUserImage}
                         placeholder="Select Avatar"
+                        required
+                        // action="/" method="POST" enctype="multipart/form-data"
                       />
                     </Row>
                     {this.state.imageLoaded ? (
                       <Row 
-                      // style={{width:"200px"}}
+                      style={{width:"200px"}}
                       >
                         <img src={this.state.avatar} />
                       </Row>
                     ) : (
                       <></>
                     )}
+
+              {/* <form action="/" method="POST" enctype="multipart/form-data">
+                <div>
+                    <label for="name">Image Title</label>
+                    <input type="text" id="name" placeholder="Name" 
+                          value="f" name="name" required />
+                </div>
+                <div>
+                    <label for="desc">Image Description</label>
+                    <textarea id="desc" name="desc" value="f" rows="2" 
+                              placeholder="Description" required>
+                    </textarea>
+                </div>
+                <div>
+                    <label for="image">Upload Image</label>
+                    <input type="file" id="image" 
+                          name="image"  required />
+                </div>
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </form> */}
+    
                     <Row>
-                      <Button onClick={this.handleRegister} className="mt-3">
+                      <Button  type="submit" 
+                      onClick={this.handleRegister} className="mt-3"
+                      >
                         APPLY
                       </Button>
                     </Row>
+                    {/* </form> */}
                   </Col>
                 </div>
               </div>
@@ -450,7 +553,7 @@ class App extends React.Component {
         </div>
         {this.state.loginSuccess ? (
           <>
-            <Navigate to="/avatar" replace={true} />
+            <Navigate to="/home" replace={true} />
           </>
         ) : (
           <></>

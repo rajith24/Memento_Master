@@ -1,3 +1,7 @@
+.removeScrollbar {
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+}
 .App {
   text-align: center;
 }
@@ -36,7 +40,36 @@
 .signInCard{
   margin-top: 250px;
   margin-left: 125px;
-  opacity: 1;
+  opacity: 0.5;
+}
+
+.loginAvatar{
+  align-items: center;
+  background: antiquewhite;
+  background-image: url("pott.png");
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* background-size: contain; */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.loginText{
+  display: block;
+  position: absolute;
+  margin-top: 250px;
+  color: #eadfdc;
+  text-shadow: 3px 3px 1px #4d4848;
+}
+
+.titleText{
+  background: -webkit-linear-gradient(#99ff0c, #044dff);
+  /* background: -webkit-linear-gradient(#2C3E50, #000000); */
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:3px 3px 1px #4d4848;
 }
 
 @keyframes App-logo-spin {
@@ -46,4 +79,134 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.expecto {
+  /* Make video to at least 100% wide and tall */
+  min-width: 100%; 
+  min-height: 100%; 
+  
+  /* Setting width & height to auto prevents the browser from stretching or squishing the video */
+  width: auto;
+  height: auto;
+  
+  /* Center the video */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.vl {
+  border-left: 3px solid green;
+  height: 500px;
+  width: auto;
+}
+.chatColumn{
+  padding: 0px;
+}
+.chatCard{
+  height: 90vh;
+
+}
+.userRow:hover {
+  background-color: #c3c3c354;
+}
+
+.greenDot{
+  color: green;
+  background-color: green;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-table;
+}
+
+.emptyArea{ 
+  align-items: center;
+  /* background: antiquewhite; */
+  background-image: url("test.png");
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* background-size: contain; */
+  background-repeat: no-repeat;
+  /* background-size: 20% 102%;
+  margin-top: 50vh; */
+  background-size: 100% 100%;
+  margin-top: 25vh;
+}
+
+.emptyArea1{ 
+  align-items: center;
+  /* background: antiquewhite; */
+  background-image: url("test2.png");
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* background-size: contain; */
+  background-repeat: no-repeat;
+  background-size: 20% 102%;
+  margin-top: 50vh;
+}
+
+.parent {
+  position: relative;
+  top: 0;
+  left: 0;
+  background: -webkit-linear-gradient(#2C3E50, #302a2a);
+}
+.image1 {
+  position: relative;
+  top: 20vh;
+  left: 0vh;
+  /* border: 1px red solid; */
+  /* background-repeat: no-repeat; */
+  background-size: -3% 69%;
+  width: 66vw;
+}
+.image2 {
+  position: absolute;
+  top: 54vh;
+  left: -2vh;
+  /* border: 1px green solid; */
+  /* top: -42vh; */
+  width: 25vh;
+}
+
+.image3{
+  position: absolute;
+  top: 49vh;
+  left: 118vh;
+  /* border: 1px green solid; */
+  /* top: -42vh; */
+  width: 25vh;
+}
+
+.image4 {
+  position: absolute;
+  top: 0vh;
+  left: 55vh;
+  /* border: 1px green solid; */
+  /* top: -42vh; */
+  width: 25vh;
+}
+.centerText{
+  position: relative;
+  top: 30vh;
+  -webkit-background-clip: text;
+  /* -webkit-text-fill-color: transparent; */
+  text-shadow: 2px 1px 3px #6d6666;
+  font-size:xx-large;
+}
+.centerTextP{
+  position: relative;
+  top: 30vh;
+  -webkit-background-clip: text;
+  /* -webkit-text-fill-color: transparent; */
+  text-shadow: 2px 1px 3px #6d6666;
+  color: transparent;
+  justify-content: center;
+  width: 50vw;
+  left: 18vh;
 }
